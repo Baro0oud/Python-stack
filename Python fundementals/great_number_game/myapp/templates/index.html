@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grate Number Game</title>
+</head>
+
+<body>
+    <h1>Welcome to the grate Number Game!</h1>
+    <p>I am thinking of a number between 1 and 100</p>
+    <p>Take a guess!</p>
+    <p>You have {{ request.session.counter }} attempts left !!</p>
+    <form action="user_guess" method="post">
+        {% csrf_token %}
+        <input type="text" name="user_number">
+        <input type="submit" value="Submit">
+    </form>
+    {% if request.session.result == 'low' %}
+    <div>
+        <p>Too low</p>
+    </div>
+    {% elif request.session.result == 'high' %}
+    <div>
+        <p>Too high</p>
+    </div>
+    {% elif request.session.result == 'equal' %}
+    <div>
+        <p>Win</p>
+        <form action="delete_session" method="post">
+            {% csrf_token %}
+            <input type="submit" value="Play again">
+        </form>
+        <form action="add_winner" method="post">
+            {% csrf_token %}
+            <label for="name">Name</label>
+            <input type="text" name="winner_name" placeholder="Enter yoor name here">
+            <input type="submit" value="Add">
+        </form>
+    </div>
+    {% elif request.session.result == 'lose' %}
+    <div>
+        <p>Lose </p>
+        <p>Number of attempts = {{ request.session.counter }}</p>
+        <form action="delete_session" method="post">
+            {% csrf_token %}
+            <input type="submit" value="Play again">
+        </form>
+    </div>
+    {% endif %}
+</body>
+
+</html>
